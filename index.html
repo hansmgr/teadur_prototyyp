@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teadur.ee – Eesti tudengite õppematerjalide platvorm</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            
+            <!-- Logo & Brand -->
+            <div class="flex items-center gap-3 shrink-0 cursor-pointer" onclick="resetFilters()">
+                <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-xl shadow-md shadow-brand-500/20">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-bold tracking-tight text-slate-900">Teadur<span class="text-brand-600">.ee</span></span>
+                    <span class="hidden sm:inline-block text-xs bg-emerald-100 text-emerald-800 font-medium px-2 py-0.5 rounded-full ml-2">Tasuta & Usaldusväärne</span>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-2xl relative">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Otsi aine koodi, nime või õppejõu järgi (nt MTAT.03.100, Mikroökonoomika)..." 
+                           class="w-full pl-10 pr-4 py-2 bg-slate-100 border border-transparent rounded-xl focus:bg-white focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 transition-all text-sm">
+                </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="flex items-center gap-3 shrink-0">
+                <button onclick="openUploadModal()" class="hidden md:flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-xl transition-colors shadow-sm text-sm">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Lae materjal üles</span>
+                </button>
+                
+                <!-- Profile Menu -->
+                <div class="flex items-center gap-3 border-l border-slate-200 pl-3">
+                    <div class="w-9 h-9 rounded-full bg-slate-200 text-brand-800 font-semibold flex items-center justify-center text-sm border-2 border-brand-500/30">
+                        L
+                    </div>
+                    <div class="hidden lg:block text-left">
+                        <p class="text-xs font-semibold text-slate-900 leading-tight">Laura</p>
+                        <p class="text-[11px] text-slate-500">Tartu Ülikool</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner / Value Prop -->
+    <section class="bg-gradient-to-r from-brand-900 via-brand-800 to-slate-900 text-white py-8 px-4 sm:px-6 lg:px-8 border-b border-brand-700/50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="space-y-2 text-center md:text-left">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 text-brand-200 text-xs font-medium border border-brand-400/20">
+                    <i class="fa-solid fa-sparkles text-amber-300"></i>
+                    <span>Säästa aega eksamisessioonil</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Eesti kõrgkoolide kontrollitud õppematerjalid ühes kohas</h1>
+                <p class="text-brand-100 text-sm max-w-2xl">
+                    Leia tasuta konspekte, eksamiküsimusi ja kontrolltööde lahendusi. Kõik materjalid on tudengite poolt hinnatud ja ajakohased.
+                </p>
+            </div>
+            <div class="flex items-center gap-4 bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10">
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-white">45 000+</p>
+                    <p class="text-xs text-brand-200">Kasutaja</p>
+                </div>
+                <div class="w-px h-8 bg-white/20"></div>
+                <div class="text-center">
+                    <p class="text-2xl font-bold text-emerald-400">100%</p>
+                    <p class="text-xs text-brand-200">Tasuta ligipääs</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Layout -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+        <!-- Filters Bar -->
+        <div class="mb-8 space-y-4">
+            
+            <!-- Universities Filter -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-2 shrink-0">Kool:</span>
+                <button onclick="setUniFilter('all')" id="uni-all" class="uni-btn active px-4 py-1.5 rounded-xl text-xs font-medium border transition-all whitespace-nowrap bg-brand-600 text-white border-brand-600 shadow-sm">
+                    Kõik kõrgkoolid
+                </button>
+                <button onclick="setUniFilter('Tartu Ülikool')" id="uni-ut" class="uni-btn px-4 py-1.5 rounded-xl text-xs font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all whitespace-nowrap">
+                    🎓 Tartu Ülikool (UT)
+                </button>
+                <button onclick="setUniFilter('TalTech')" id="uni-taltech" class="uni-btn px-4 py-1.5 rounded-xl text-xs font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all whitespace-nowrap">
+                    ⚙️ TalTech
+                </button>
+                <button onclick="setUniFilter('Tallinna Ülikool')" id="uni-tlu" class="uni-btn px-4 py-1.5 rounded-xl text-xs font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all whitespace-nowrap">
+                    📚 Tallinna Ülikool (TLÜ)
+                </button>
+                <button onclick="setUniFilter('EMÜ')" id="uni-emu" class="uni-btn px-4 py-1.5 rounded-xl text-xs font-medium border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-all whitespace-nowrap">
+                    🌱 Eesti Maaülikool (EMÜ)
+                </button>
+            </div>
+
+            <!-- Material Type & Sorting Bar -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-slate-200/80">
+                <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-2 shrink-0">Tüüp:</span>
+                    <button onclick="setTypeFilter('all')" id="type-all" class="type-btn active px-3 py-1 rounded-lg text-xs font-medium bg-slate-800 text-white transition-all whitespace-nowrap">
+                        Kõik
+                    </button>
+                    <button onclick="setTypeFilter('Konspekt')" id="type-konspekt" class="type-btn px-3 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all whitespace-nowrap">
+                        📝 Konspektid
+                    </button>
+                    <button onclick="setTypeFilter('Kontrolltöö')" id="type-kontrolltoo" class="type-btn px-3 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all whitespace-nowrap">
+                        🧪 Kontrolltööd
+                    </button>
+                    <button onclick="setTypeFilter('Eksam')" id="type-eksam" class="type-btn px-3 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all whitespace-nowrap">
+                        🎯 Eksamid
+                    </button>
+                    <button onclick="setTypeFilter('Harjutusülesanded')" id="type-ulesanded" class="type-btn px-3 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all whitespace-nowrap">
+                        📐 Harjutusülesanded
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between w-full sm:w-auto gap-4">
+                    <span id="resultsCount" class="text-xs font-medium text-slate-500 shrink-0">Kuvatakse 6 materjali</span>
+                    <select id="sortSelect" onchange="renderMaterials()" class="bg-white border border-slate-200 text-xs rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none focus:border-brand-500">
+                        <option value="rating">Sorteeri: Kõrgeim hinnang</option>
+                        <option value="newest">Sorteeri: Uusimad enne</option>
+                        <option value="downloads">Sorteeri: Enim alla laaditud</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Material Cards Grid -->
+        <div id="materialsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cards will be populated by JS -->
+        </div>
+
+        <!-- Empty State (hidden by default) -->
+        <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm my-6">
+            <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-slate-800">Ühtegi materjali ei leitud</h3>
+            <p class="text-sm text-slate-500 mt-1 max-w-md mx-auto">Proovi muuta otsingut või filtreid. Ole esimene ja lae selle aine materjal ise üles!</p>
+            <button onclick="openUploadModal()" class="mt-4 bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-xl text-sm transition-colors">
+                Lae uus materjal üles
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-800">Teadur.ee</span>
+                <span>— Eesti üliõpilaste avatud õpikeskkond © 2026</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="#" class="hover:text-brand-600 transition-colors">Kasutustingimused</a>
+                <a href="#" class="hover:text-brand-600 transition-colors">Privaatsuspoliitika</a>
+                <a href="#" class="hover:text-brand-600 transition-colors">KKK ja abi</a>
+                <a href="#" class="hover:text-brand-600 transition-colors">Kontakt</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Document Preview Modal -->
+    <div id="previewModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+                <div class="flex items-center gap-3">
+                    <span id="modalTypeBadge" class="text-xs px-2.5 py-1 rounded-md font-semibold bg-brand-100 text-brand-800"></span>
+                    <div>
+                        <h2 id="modalTitle" class="font-bold text-slate-900 text-base sm:text-lg leading-tight"></h2>
+                        <p id="modalMeta" class="text-xs text-slate-500 mt-0.5"></p>
+                    </div>
+                </div>
+                <button onclick="closePreviewModal()" class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content (Two Columns on large screens) -->
+            <div class="flex-1 overflow-y-auto grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
+                
+                <!-- Document Page Viewer (2 Cols) -->
+                <div class="lg:col-span-2 p-6 bg-slate-100 flex flex-col items-center justify-start min-h-[350px]">
+                    <div class="w-full max-w-md bg-white rounded-lg border border-slate-300 shadow-md p-6 space-y-4 text-xs font-mono text-slate-700 relative select-none">
+                        <div class="absolute top-3 right-3 bg-emerald-100 text-emerald-800 text-[10px] px-2 py-0.5 rounded font-sans font-medium">
+                            <i class="fa-solid fa-shield-check"></i> Kontrollitud 2025/2026
+                        </div>
+                        <div class="border-b border-slate-200 pb-3 font-sans">
+                            <h3 id="docDocTitle" class="font-bold text-slate-900 text-sm"></h3>
+                            <p id="docDocCourse" class="text-slate-500 text-xs"></p>
+                        </div>
+                        <div class="space-y-2 py-2 leading-relaxed">
+                            <p class="font-bold text-slate-900 font-sans">1. OLULISEMAD MÕISTED JA TEOREEMID</p>
+                            <p>• Definitsioon A: Süsteemi väärtuse maksimeerimine ressursside piiratuse tingimustes.</p>
+                            <p>• Valem 1.2: <span class="bg-amber-50 px-1 border border-amber-200 rounded">f(x) = ∑ (w_i * x_i) + β</span></p>
+                            <p class="pt-2 font-bold text-slate-900 font-sans">2. EXAMI TÜÜPILISEDKÜSIMUSED</p>
+                            <p class="text-slate-500 italic">[Lehekülg 1 / 4 — Eelvaate piirang. Kogu faili nägemiseks lae alla]</p>
+                        </div>
+                        <div class="h-16 bg-gradient-to-t from-white to-transparent absolute bottom-0 left-0 right-0 rounded-b-lg"></div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-3"><i class="fa-solid fa-circle-info mr-1"></i> Eelvaade näitab esimest lehekülge full-HD kvaliteedis.</p>
+                </div>
+
+                <!-- Info & Reviews Sidebar (1 Col) -->
+                <div class="p-6 space-y-6 bg-white flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Faili andmed</h4>
+                            <ul class="text-xs space-y-2 text-slate-600">
+                                <li class="flex justify-between"><span class="text-slate-400">Autor:</span> <span id="modalAuthor" class="font-medium text-slate-800"></span></li>
+                                <li class="flex justify-between"><span class="text-slate-400">Ülikool:</span> <span id="modalUni" class="font-medium text-slate-800"></span></li>
+                                <li class="flex justify-between"><span class="text-slate-400">Formaat:</span> <span class="font-medium text-slate-800">PDF (2.4 MB)</span></li>
+                                <li class="flex justify-between"><span class="text-slate-400">Alla laaditud:</span> <span id="modalDownloads" class="font-medium text-slate-800"></span></li>
+                            </ul>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Hinnangud ja tagasiside</h4>
+                                <span id="modalRatingText" class="text-xs font-bold text-amber-600"></span>
+                            </div>
+                            
+                            <!-- Sample Reviews List -->
+                            <div class="space-y-3 text-xs max-h-40 overflow-y-auto pr-1">
+                                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                                    <div class="flex items-center justify-between text-[11px]">
+                                        <span class="font-semibold text-slate-800">Markus (TÜ)</span>
+                                        <span class="text-amber-500">★★★★★</span>
+                                    </div>
+                                    <p class="text-slate-600 mt-1">Super konspekt! Päästis minu eksami teooriaosa täielikult.</p>
+                                </div>
+                                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                                    <div class="flex items-center justify-between text-[11px]">
+                                        <span class="font-semibold text-slate-800">Kertu</span>
+                                        <span class="text-amber-500">★★★★☆</span>
+                                    </div>
+                                    <p class="text-slate-600 mt-1">Väga hea ja selge käekiri. Soovitan!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Download CTA -->
+                    <div class="pt-4 border-t border-slate-100">
+                        <button onclick="downloadDocument()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-sm transition-colors shadow-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Lae tasuta alla (PDF)</span>
+                        </button>
+                        <p class="text-[10px] text-center text-slate-400 mt-2">Tasuta registreeritud kasutajale • Ei vaja krediite</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Material Modal -->
+    <div id="uploadModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200">
+            
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900">Lae uus õppematerjal üles</h3>
+                </div>
+                <button onclick="closeUploadModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="uploadForm" onsubmit="handleUploadSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Aine kood ja nimetus *</label>
+                    <input type="text" required placeholder="nt MTAT.03.100 Programmeerimise alused" class="w-full text-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-brand-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Kõrgkool *</label>
+                        <select required class="w-full text-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-brand-500">
+                            <option value="Tartu Ülikool">Tartu Ülikool</option>
+                            <option value="TalTech">TalTech</option>
+                            <option value="Tallinna Ülikool">Tallinna Ülikool</option>
+                            <option value="EMÜ">Eesti Maaülikool</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Materjali tüüp *</label>
+                        <select required class="w-full text-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-brand-500">
+                            <option value="Konspekt">Konspekt</option>
+                            <option value="Kontrolltöö">Kontrolltöö</option>
+                            <option value="Eksam">Eksam</option>
+                            <option value="Harjutusülesanded">Harjutusülesanded</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Aasta / Semester</label>
+                    <input type="text" placeholder="nt 2025/2026 Sügis" class="w-full text-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-brand-500">
+                </div>
+
+                <!-- File Drag & Drop Simulation -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Fail (PDF, DOCX) *</label>
+                    <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center bg-slate-50 hover:bg-brand-50/50 hover:border-brand-400 cursor-pointer transition-colors">
+                        <i class="fa-solid fa-file-pdf text-3xl text-brand-500 mb-2"></i>
+                        <p class="text-xs font-medium text-slate-700">Lohista fail siia või klõpsa sirvimiseks</p>
+                        <p class="text-[10px] text-slate-400 mt-1">Maksimaalne suurus: 25MB</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 pt-2">
+                    <input type="checkbox" id="confirmRules" required class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                    <label for="confirmRules" class="text-[11px] text-slate-600">Kinnitan, et materjal on ajakohane ega riku autoriõiguseid.</label>
+                </div>
+
+                <div class="pt-3 flex items-center justify-end gap-3">
+                    <button type="button" onclick="closeUploadModal()" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">Tühista</button>
+                    <button type="submit" class="px-5 py-2 text-xs font-medium bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition-colors">Lae üles</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMessage" class="text-xs font-medium">Toiming õnnestus!</span>
+    </div>
+
+    <!-- Application Logic Script -->
+    <script>
+        // Sample Study Materials Dataset
+        const materialsData = [
+            {
+                id: 1,
+                code: "MTAT.03.100",
+                title: "Programmeerimise alused (Python)",
+                uni: "Tartu Ülikool",
+                type: "Konspekt",
+                author: "Laura K.",
+                date: "12. Feb 2026",
+                rating: 4.9,
+                reviewsCount: 38,
+                verified: "2025/2026",
+                downloads: 412,
+                description: "Täielik ainematerjal koos funktsioonide, tsüklite ja näidisülesannete lahendustega."
+            },
+            {
+                id: 2,
+                code: "MEM3410",
+                title: "Tugevusõpetus I – Kontrolltöö lahendused",
+                uni: "TalTech",
+                type: "Kontrolltöö",
+                author: "Rasmus P.",
+                date: "04. Jan 2026",
+                rating: 4.8,
+                reviewsCount: 24,
+                verified: "2025/2026",
+                downloads: 289,
+                description: "Varasemate aastate kordusülesanded samm-sammuliste lahenduste ja joonistega."
+            },
+            {
+                id: 3,
+                code: "IFI6001",
+                title: "Inimese ja arvuti interaktsioon (HCI)",
+                uni: "Tallinna Ülikool",
+                type: "Eksam",
+                author: "Eliise M.",
+                date: "20. Jan 2026",
+                rating: 4.7,
+                reviewsCount: 19,
+                verified: "2025/2026",
+                downloads: 156,
+                description: "Eksami kordamisküsimuste vastused ja UX disainiprintsiipide kokkuvõte."
+            },
+            {
+                id: 4,
+                code: "MS.0012",
+                title: "Üldine botaanika ja taimefüsioloogia",
+                uni: "EMÜ",
+                type: "Konspekt",
+                author: "Marten T.",
+                date: "15. Dec 2025",
+                rating: 4.6,
+                reviewsCount: 12,
+                verified: "2025/2026",
+                downloads: 98,
+                description: "Põhjalik loengukonspekt koos digitaalsete jooniste ja kordamispunktidega."
+            },
+            {
+                id: 5,
+                code: "SVMJ.02.003",
+                title: "Mikroökonoomika valemid ja eksamivastused",
+                uni: "Tartu Ülikool",
+                type: "Eksam",
+                author: "Karl H.",
+                date: "08. Jan 2026",
+                rating: 5.0,
+                reviewsCount: 52,
+                verified: "2025/2026",
+                downloads: 630,
+                description: "Kõik tüüpilised eksamiarvutused ja nõudluse-pakkumise mudelite graafikud."
+            },
+            {
+                id: 6,
+                code: "TMM0010",
+                title: "Turunduse alused ja juhtimine",
+                uni: "TalTech",
+                type: "Harjutusülesanded",
+                author: "Anni S.",
+                date: "02. Feb 2026",
+                rating: 4.5,
+                reviewsCount: 15,
+                verified: "2025/2026",
+                downloads: 210,
+                description: "Semestri juhtumiuuringute (case study) analüüsid ja näidisvastused."
+            }
+        ];
+
+        // Active State
+        let selectedUni = 'all';
+        let selectedType = 'all';
+        let searchQuery = '';
+        let currentModalDoc = null;
+
+        // On Page Load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMaterials();
+        });
+
+        // Filter Handlers
+        function setUniFilter(uni) {
+            selectedUni = uni;
+            document.querySelectorAll('.uni-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white', 'border-brand-600', 'shadow-sm');
+                btn.classList.add('bg-white', 'text-slate-700', 'border-slate-200');
+            });
+            
+            const activeBtn = document.getElementById(
+                uni === 'all' ? 'uni-all' : 
+                uni === 'Tartu Ülikool' ? 'uni-ut' : 
+                uni === 'TalTech' ? 'uni-taltech' : 
+                uni === 'Tallinna Ülikool' ? 'uni-tlu' : 'uni-emu'
+            );
+            if(activeBtn) {
+                activeBtn.classList.remove('bg-white', 'text-slate-700', 'border-slate-200');
+                activeBtn.classList.add('bg-brand-600', 'text-white', 'border-brand-600', 'shadow-sm');
+            }
+            renderMaterials();
+        }
+
+        function setTypeFilter(type) {
+            selectedType = type;
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'text-white');
+                btn.classList.add('bg-slate-100', 'text-slate-600');
+            });
+
+            const activeBtn = document.getElementById(
+                type === 'all' ? 'type-all' :
+                type === 'Konspekt' ? 'type-konspekt' :
+                type === 'Kontrolltöö' ? 'type-kontrolltoo' :
+                type === 'Eksam' ? 'type-eksam' : 'type-ulesanded'
+            );
+            if(activeBtn) {
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-600');
+                activeBtn.classList.add('bg-slate-800', 'text-white');
+            }
+            renderMaterials();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+            renderMaterials();
+        }
+
+        function resetFilters() {
+            setUniFilter('all');
+            setTypeFilter('all');
+            document.getElementById('searchInput').value = '';
+            searchQuery = '';
+            renderMaterials();
+        }
+
+        // Render Cards
+        function renderMaterials() {
+            const grid = document.getElementById('materialsGrid');
+            const emptyState = document.getElementById('emptyState');
+            const sortVal = document.getElementById('sortSelect').value;
+
+            // Filter logic
+            let filtered = materialsData.filter(item => {
+                const matchUni = selectedUni === 'all' || item.uni === selectedUni;
+                const matchType = selectedType === 'all' || item.type === selectedType;
+                const matchSearch = searchQuery === '' || 
+                                    item.code.toLowerCase().includes(searchQuery) || 
+                                    item.title.toLowerCase().includes(searchQuery) ||
+                                    item.author.toLowerCase().includes(searchQuery);
+                return matchUni && matchType && matchSearch;
+            });
+
+            // Sorting logic
+            if(sortVal === 'rating') {
+                filtered.sort((a, b) => b.rating - a.rating);
+            } else if(sortVal === 'downloads') {
+                filtered.sort((a, b) => b.downloads - a.downloads);
+            }
+
+            // Update counter
+            document.getElementById('resultsCount').innerText = `Kuvatakse ${filtered.length} materjali`;
+
+            if(filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            // Render HTML
+            grid.innerHTML = filtered.map(item => `
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                        <!-- Top Badges -->
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                                ${item.uni}
+                            </span>
+                            <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60 flex items-center gap-1">
+                                <i class="fa-solid fa-circle-check text-[10px]"></i> Kinnitatud ${item.verified}
+                            </span>
+                        </div>
+
+                        <!-- Title & Code -->
+                        <div class="mb-3">
+                            <span class="text-xs font-mono font-bold text-brand-600 block mb-0.5">${item.code}</span>
+                            <h3 class="font-bold text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-2 text-base">
+                                ${item.title}
+                            </h3>
+                        </div>
+
+                        <p class="text-xs text-slate-500 mb-4 line-clamp-2">${item.description}</p>
+                    </div>
+
+                    <div>
+                        <!-- Meta Stats -->
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 mb-4">
+                            <div class="flex items-center gap-1 text-amber-500 font-semibold">
+                                <span>★</span>
+                                <span>${item.rating}</span>
+                                <span class="text-slate-400 font-normal">(${item.reviewsCount})</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-[11px]">
+                                <span><i class="fa-regular fa-user mr-1"></i>${item.author}</span>
+                                <span><i class="fa-solid fa-download mr-1"></i>${item.downloads}</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="openPreviewModal(${item.id})" class="w-full py-2 px-3 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors text-center flex items-center justify-center gap-1">
+                                <i class="fa-regular fa-eye"></i> Eelvaade
+                            </button>
+                            <button onclick="quickDownload(${item.id})" class="w-full py-2 px-3 text-xs font-semibold text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-xl transition-colors text-center flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-download"></i> Lae alla
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Modal Controls
+        function openPreviewModal(docId) {
+            const doc = materialsData.find(m => m.id === docId);
+            if(!doc) return;
+            currentModalDoc = doc;
+
+            document.getElementById('modalTitle').innerText = doc.title;
+            document.getElementById('modalMeta').innerText = `${doc.code} • Laaditud ${doc.date}`;
+            document.getElementById('modalTypeBadge').innerText = doc.type;
+            document.getElementById('docDocTitle').innerText = doc.title;
+            document.getElementById('docDocCourse').innerText = `${doc.code} | ${doc.uni}`;
+            document.getElementById('modalAuthor').innerText = doc.author;
+            document.getElementById('modalUni').innerText = doc.uni;
+            document.getElementById('modalDownloads').innerText = `${doc.downloads} korda`;
+            document.getElementById('modalRatingText').innerText = `Hinne ${doc.rating} / 5.0 (${doc.reviewsCount} arvustust)`;
+
+            document.getElementById('previewModal').classList.remove('hidden');
+        }
+
+        function closePreviewModal() {
+            document.getElementById('previewModal').classList.add('hidden');
+        }
+
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+        }
+
+        function handleUploadSubmit(e) {
+            e.preventDefault();
+            closeUploadModal();
+            showToast("Aitäh! Sinu materjal laeti edukalt üles ja edastati modereerimisele.");
+            document.getElementById('uploadForm').reset();
+        }
+
+        function quickDownload(docId) {
+            const doc = materialsData.find(m => m.id === docId);
+            showToast(`Fail "${doc ? doc.code : 'Materjal'}.pdf" alla laaditud!`);
+        }
+
+        function downloadDocument() {
+            closePreviewModal();
+            showToast("Õppematerjal edukalt alla laaditud!");
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
